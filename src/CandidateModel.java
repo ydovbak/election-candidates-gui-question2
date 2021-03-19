@@ -107,14 +107,11 @@ public class CandidateModel {
 
     @Override
     public String toString() {
-        return "CandidateModel{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", address='" + address + '\'' +
-                ", cityRegion='" + cityRegion + '\'' +
-                ", party='" + party + '\'' +
-                ", elecArea='" + elecArea + '\'' +
-                '}';
+        return
+                "\nCandidate NO: " + id +
+                "\nName: " + firstName + lastName +
+                "\nAddress: " + address + ", " + cityRegion +
+                "\nParty: '" + party + "'" +
+                "\nLocal Electoral Area: " + elecArea + "\n";
     }
 }

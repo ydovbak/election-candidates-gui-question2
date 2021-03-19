@@ -12,7 +12,7 @@ public class CandidateView extends JFrame{
     private JButton search = new JButton("Search");
 
     // all data displayed here
-    private JTextArea dataDisplayArea = new JTextArea(15, 50);
+    private JTextArea dataDisplayArea = new JTextArea(40, 110);
 
     // make display area scrollable
     JScrollPane scroll = new JScrollPane (dataDisplayArea,
@@ -23,7 +23,7 @@ public class CandidateView extends JFrame{
     public CandidateView() {
 
         this.setTitle("Elections Registry");
-        this.setSize(700, 375);
+        this.setSize(1200, 750);
         this.setResizable(false);
     }
 
@@ -44,6 +44,18 @@ public class CandidateView extends JFrame{
         contentPane.add(scroll);
         this.setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void showRecords(ArrayList<CandidateModel> candidates) {
+
+        String textToPrint = "";
+        for (CandidateModel c : candidates) {
+            textToPrint += c + "\n";
+        }
+
+
+        dataDisplayArea.setText(textToPrint);
+        dataDisplayArea.setCaretPosition(0); // display at start
     }
 
 

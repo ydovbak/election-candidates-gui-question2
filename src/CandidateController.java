@@ -71,6 +71,9 @@ public class CandidateController implements ActionListener{
                 candidateView.getElectoralAreaComboBox().addItem(area);
             }
         }
+
+        // show all
+        candidateView.showRecords(candidates);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -80,15 +83,17 @@ public class CandidateController implements ActionListener{
 
             // get the name of the area that was selected in combo box
             String area = (String)candidateView.getElectoralAreaComboBox().getSelectedItem();
-            String textToShow="";
+            ArrayList<CandidateModel> filteredCandidates = new ArrayList<>();
             for (CandidateModel c : candidates) {
                 if (c.getElecArea().equals(area)) {
-                    textToShow += c + "\n";
+                    filteredCandidates.add(c);
                 }
             }
-
-            candidateView.getDataDisplayArea().setText(textToShow);
-            candidateView.getDataDisplayArea().setCaretPosition(0); // display at start
+            candidateView.showRecords(filteredCandidates);
         }
+    }
+
+    public void showAllRecords() {
+
     }
 }
