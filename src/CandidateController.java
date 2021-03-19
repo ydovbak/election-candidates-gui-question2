@@ -51,7 +51,7 @@ public class CandidateController extends JFrame implements ActionListener, Windo
             }
 
             // reading in the file
-            Scanner in = new Scanner(selectedFile, StandardCharsets.US_ASCII);
+            Scanner in = new Scanner(selectedFile);
 
             // the fist line in csv contains headings, so skipping them
             if(in.hasNextLine()) {
