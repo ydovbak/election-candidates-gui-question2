@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowListener;
 
-public class AddNewCandidateView extends JPanel {
+public class EditCandidateView extends JPanel {
 
     private JButton add = new JButton("Add");
     private JButton remove = new JButton("Remove");
@@ -36,7 +36,7 @@ public class AddNewCandidateView extends JPanel {
     private Container contentPane;
 
 
-    public AddNewCandidateView(Container contentPane)
+    public EditCandidateView(Container contentPane)
     {
         this.contentPane = contentPane;
         //this.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));

@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class CandidateView extends JPanel{
+public class ReadCandidateView extends JPanel{
 
     // search criteria
     private JComboBox<String> electoralAreaComboBox = new JComboBox<String>();
@@ -18,7 +18,7 @@ public class CandidateView extends JPanel{
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 
-    public CandidateView() {
+    public ReadCandidateView() {
         //this.contentPane = contentPane;
         //this.setTitle("Elections Registry");
         this.setSize(1200, 650);

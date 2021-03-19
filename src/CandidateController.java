@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class CandidateController extends JFrame implements ActionListener, WindowListener {
 
-    private CandidateView candidateView;
-    private AddNewCandidateView addNewCandidateView;
+    private ReadCandidateView candidateView;
+    private EditCandidateView addNewCandidateView;
     private WindowView windowView;
     private ArrayList<CandidateModel> candidates;
 

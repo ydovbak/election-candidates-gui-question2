@@ -1,7 +1,4 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
@@ -9,15 +6,15 @@ import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 public class WindowView  {
 
     private JFrame Jframe;
-    private CandidateView readCandidates;
-    private AddNewCandidateView editCandidates;
+    private ReadCandidateView readCandidates;
+    private EditCandidateView editCandidates;
     private JTabbedPane jTabbedPane;
 
 
     public WindowView() {
         Jframe = new JFrame();
-        editCandidates = new AddNewCandidateView(Jframe.getContentPane());
-        readCandidates = new CandidateView();
+        editCandidates = new EditCandidateView(Jframe.getContentPane());
+        readCandidates = new ReadCandidateView();
         editCandidates.setLayout(new BoxLayout(editCandidates, BoxLayout.PAGE_AXIS));
 
         jTabbedPane = new JTabbedPane();
@@ -47,11 +44,11 @@ public class WindowView  {
         return Jframe;
     }
 
-    public CandidateView getReadCandidates() {
+    public ReadCandidateView getReadCandidates() {
         return readCandidates;
     }
 
-    public AddNewCandidateView getEditCandidates() {
+    public EditCandidateView getEditCandidates() {
         return editCandidates;
     }
 
