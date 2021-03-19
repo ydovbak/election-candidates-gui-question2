@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class CandidateController implements ActionListener{
 
     private CandidateView candidateView;
+    private AddNewCandidateView addNewCandidateView;
     private ArrayList<CandidateModel> candidates;
 
     public CandidateController() {
