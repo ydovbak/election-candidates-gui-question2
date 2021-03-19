@@ -13,7 +13,7 @@ public class WindowView  {
 
     public WindowView() {
         Jframe = new JFrame();
-        editCandidates = new EditCandidateView(Jframe.getContentPane());
+        editCandidates = new EditCandidateView();
         readCandidates = new ReadCandidateView();
         editCandidates.setLayout(new BoxLayout(editCandidates, BoxLayout.PAGE_AXIS));
 

@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -50,7 +51,7 @@ public class CandidateController extends JFrame implements ActionListener, Windo
             }
 
             // reading in the file
-            Scanner in = new Scanner(selectedFile);
+            Scanner in = new Scanner(selectedFile, StandardCharsets.US_ASCII);
 
             // the fist line in csv contains headings, so skipping them
             if(in.hasNextLine()) {

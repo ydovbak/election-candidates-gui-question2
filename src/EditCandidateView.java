@@ -33,12 +33,10 @@ public class EditCandidateView extends JPanel {
     private JPanel mainPanel = new JPanel();
     private JPanel printPanel = new JPanel();
 
-    private Container contentPane;
 
 
-    public EditCandidateView(Container contentPane)
+    public EditCandidateView()
     {
-        this.contentPane = contentPane;
         //this.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
         this.setSize(600, 600);
         //this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
