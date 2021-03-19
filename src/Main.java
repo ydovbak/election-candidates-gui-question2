@@ -1,8 +1,8 @@
 public class Main {
 
     public static void main(String[] args) {
-        //new CandidateController();
+        new CandidateController();
 
-        new AddNewCandidateController();
+        //new WindowView();
     }
 }

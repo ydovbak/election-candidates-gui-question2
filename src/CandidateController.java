@@ -1,24 +1,34 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class CandidateController implements ActionListener{
+public class CandidateController extends JFrame implements ActionListener, WindowListener {
 
     private CandidateView candidateView;
     private AddNewCandidateView addNewCandidateView;
+    private WindowView windowView;
     private ArrayList<CandidateModel> candidates;
 
     public CandidateController() {
 
         candidates = new ArrayList<>();
-        candidateView = new CandidateView();
+        //candidateView = new CandidateView();
+        //candidateView.init();
+        windowView = new WindowView();
+        candidateView = windowView.getReadCandidates();
+        addNewCandidateView = windowView.getEditCandidates();
+
+        addNewCandidateView.init();
         candidateView.init();
+        windowView.setWindowsListener(this);
 
         // hook the action listener to Search button
-        candidateView.getSearch().addActionListener(this);
+        windowView.getReadCandidates().getSearch().addActionListener(this);
 
 
         // create a file chooser for selecting files
@@ -34,7 +44,7 @@ public class CandidateController implements ActionListener{
             fileChooser.setCurrentDirectory(new File(".\\"));
 
             // if user chooses the file and clicks "ok", we get the selected file
-            if (fileChooser.showOpenDialog(candidateView.getContentPane()) == JFileChooser.APPROVE_OPTION)
+            if (fileChooser.showOpenDialog(getContentPane()) == JFileChooser.APPROVE_OPTION)
             {
                 selectedFile = fileChooser.getSelectedFile();
             }
@@ -95,6 +105,42 @@ public class CandidateController implements ActionListener{
     }
 
     public void showAllRecords() {
+
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+        System.out.println("window started");
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        System.exit(0);
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
 
     }
 }

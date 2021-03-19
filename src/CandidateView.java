@@ -2,9 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class CandidateView extends JFrame{
-
-    private Container contentPane = this.getContentPane();
+public class CandidateView extends JPanel{
 
     // search criteria
     private JComboBox<String> electoralAreaComboBox = new JComboBox<String>();
@@ -12,7 +10,7 @@ public class CandidateView extends JFrame{
     private JButton search = new JButton("Search");
 
     // all data displayed here
-    private JTextArea dataDisplayArea = new JTextArea(40, 110);
+    private JTextArea dataDisplayArea = new JTextArea(40, 100);
 
     // make display area scrollable
     JScrollPane scroll = new JScrollPane (dataDisplayArea,
@@ -21,15 +19,15 @@ public class CandidateView extends JFrame{
 
 
     public CandidateView() {
-
-        this.setTitle("Elections Registry");
-        this.setSize(1200, 750);
-        this.setResizable(false);
+        //this.contentPane = contentPane;
+        //this.setTitle("Elections Registry");
+        this.setSize(1200, 650);
+        //this.setResizable(false);
     }
 
     public void init() {
         // set the layouts
-        contentPane.setLayout(new FlowLayout(FlowLayout.CENTER));
+        this.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         JPanel optionsPanel = new JPanel();  //will contain first combo box and button
         optionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -40,10 +38,10 @@ public class CandidateView extends JFrame{
         optionsPanel.add(search);
 
         // add everything to main content pane
-        contentPane.add(optionsPanel);
-        contentPane.add(scroll);
+        this.add(optionsPanel);
+        this.add(scroll);
         this.setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void showRecords(ArrayList<CandidateModel> candidates) {

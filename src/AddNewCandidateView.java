@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowListener;
 
-public class AddNewCandidateView extends JFrame {
+public class AddNewCandidateView extends JPanel {
 
     private JButton add = new JButton("Add");
     private JButton remove = new JButton("Remove");
@@ -28,18 +28,20 @@ public class AddNewCandidateView extends JFrame {
 
     private JTextArea printArea = new JTextArea();
 
+    private JPanel basePanel = new JPanel();
     private JPanel menuPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
     private JPanel printPanel = new JPanel();
 
-    private Container contentPane = this.getContentPane();
+    private Container contentPane;
 
 
-    public AddNewCandidateView()
+    public AddNewCandidateView(Container contentPane)
     {
-        this.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
-        this.setSize(1200, 750);
-        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        this.contentPane = contentPane;
+        //this.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
+        this.setSize(600, 600);
+        //this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
 
 
@@ -73,18 +75,18 @@ public class AddNewCandidateView extends JFrame {
         printPanel.add(scroll, BorderLayout.CENTER);
 
 
-        contentPane.add(menuPanel);
-        contentPane.add(mainPanel);
-        contentPane.add(printPanel);
+        this.add(menuPanel);
+        this.add(mainPanel);
+        this.add(printPanel);
 
 
         this.setVisible(true);
     }
 
-    public void setWindowsListener(WindowListener w)
-    {
-        this.addWindowListener(w);
-    }
+//    public void setWindowsListener(WindowListener w)
+//    {
+//        this.addWindowListener(w);
+//    }
 
     public JButton getAdd() {
         return add;
