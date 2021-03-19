@@ -60,12 +60,35 @@ public class CandidateController implements ActionListener{
             e.printStackTrace();
         }
 
+        // populate the combo box
+        ArrayList<String> areas = new ArrayList<>();
         for (CandidateModel c : candidates) {
-            System.out.println(c);
+            String area = c.getElecArea();
+
+            // adding only unique areas
+            if(!areas.contains(area)) {
+                areas.add(area);
+                candidateView.getElectoralAreaComboBox().addItem(area);
+            }
         }
     }
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        // if user clicked on search
+        if(e.getSource() == candidateView.getSearch()) {
+
+            // get the name of the area that was selected in combo box
+            String area = (String)candidateView.getElectoralAreaComboBox().getSelectedItem();
+            String textToShow="";
+            for (CandidateModel c : candidates) {
+                if (c.getElecArea().equals(area)) {
+                    textToShow += c + "\n";
+                }
+            }
+
+            candidateView.getDataDisplayArea().setText(textToShow);
+            candidateView.getDataDisplayArea().setCaretPosition(0); // display at start
+        }
     }
 }
