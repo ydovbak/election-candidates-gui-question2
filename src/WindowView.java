@@ -18,7 +18,7 @@ public class WindowView  {
         editCandidates.setLayout(new BoxLayout(editCandidates, BoxLayout.PAGE_AXIS));
 
         jTabbedPane = new JTabbedPane();
-        jTabbedPane.setBounds(10, 10, 1200, 700);
+        jTabbedPane.setBounds(5, 5, 1200, 600);
         jTabbedPane.add("Read Candidates", readCandidates);
         jTabbedPane.add("Edit Candidates", editCandidates);
 

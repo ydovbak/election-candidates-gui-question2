@@ -10,7 +10,7 @@ public class ReadCandidateView extends JPanel{
     private JButton search = new JButton("Search");
 
     // all data displayed here
-    private JTextArea dataDisplayArea = new JTextArea(40, 100);
+    private JTextArea dataDisplayArea = new JTextArea(30, 90);
 
     // make display area scrollable
     JScrollPane scroll = new JScrollPane (dataDisplayArea,

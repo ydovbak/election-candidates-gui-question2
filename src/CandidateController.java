@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 public class CandidateController extends JFrame implements ActionListener, WindowListener {
 
-    private ReadCandidateView candidateView;
-    private EditCandidateView addNewCandidateView;
+    private ReadCandidateView candidateReadView;
+    private EditCandidateView candidateEditView;
     private WindowView windowView;
     private ArrayList<CandidateModel> candidates;
 
@@ -22,37 +22,39 @@ public class CandidateController extends JFrame implements ActionListener, Windo
         //candidateView = new CandidateView();
         //candidateView.init();
         windowView = new WindowView();
-        candidateView = windowView.getReadCandidates();
-        addNewCandidateView = windowView.getEditCandidates();
+        candidateReadView = windowView.getReadCandidates();
+        candidateEditView = windowView.getEditCandidates();
 
-        addNewCandidateView.init();
-        candidateView.init();
+        candidateEditView.init();
+        candidateReadView.init();
         windowView.setWindowsListener(this);
 
         // hook the action listener to Search button
-        windowView.getReadCandidates().getSearch().addActionListener(this);
-
+        candidateReadView.getSearch().addActionListener(this);
+        candidateEditView.getFind().addActionListener(this);
+        candidateEditView.getAdd().addActionListener(this);
+        candidateEditView.getRemove().addActionListener(this);
 
         // create a file chooser for selecting files
         // that will be analysed and shown in program
         try {
             // initially set to null
-            File selectedFile = null;
-
-            // create file chooser for browsing local files
-            JFileChooser fileChooser = new JFileChooser();
-
-            // set the directory where the file chooser will be opened
-            fileChooser.setCurrentDirectory(new File(".\\"));
-
-            // if user chooses the file and clicks "ok", we get the selected file
-            if (fileChooser.showOpenDialog(getContentPane()) == JFileChooser.APPROVE_OPTION)
-            {
-                selectedFile = fileChooser.getSelectedFile();
-            }
-
+            File selectedFile = new File("/Users/yuliiadovbak/Desktop/dcccandidatesforlocalelection2009p20120822-1410.csv");
+//
+//            // create file chooser for browsing local files
+//            JFileChooser fileChooser = new JFileChooser();
+//
+//            // set the directory where the file chooser will be opened
+//            fileChooser.setCurrentDirectory(new File(".\\"));
+//
+//            // if user chooses the file and clicks "ok", we get the selected file
+//            if (fileChooser.showOpenDialog(getContentPane()) == JFileChooser.APPROVE_OPTION)
+//            {
+//                selectedFile = fileChooser.getSelectedFile();
+//            }
+//            System.out.println(selectedFile.getAbsolutePath());
             // reading in the file
-            Scanner in = new Scanner(new FileInputStream( selectedFile));
+            Scanner in = new Scanner(new FileInputStream(selectedFile));
 
             // the fist line in csv contains headings, so skipping them
             if(in.hasNextLine()) {
@@ -81,33 +83,81 @@ public class CandidateController extends JFrame implements ActionListener, Windo
             // adding only unique areas
             if(!areas.contains(area)) {
                 areas.add(area);
-                candidateView.getElectoralAreaComboBox().addItem(area);
+                candidateReadView.getElectoralAreaComboBox().addItem(area);
             }
         }
 
         // show all
-        candidateView.showRecords(candidates);
+        candidateReadView.showRecords(candidates);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
 
         // if user clicked on search
-        if(e.getSource() == candidateView.getSearch()) {
+        if(e.getSource() == candidateReadView.getSearch()) {
 
             // get the name of the area that was selected in combo box
-            String area = (String)candidateView.getElectoralAreaComboBox().getSelectedItem();
+            String area = (String) candidateReadView.getElectoralAreaComboBox().getSelectedItem();
             ArrayList<CandidateModel> filteredCandidates = new ArrayList<>();
             for (CandidateModel c : candidates) {
                 if (c.getElecArea().equals(area)) {
                     filteredCandidates.add(c);
                 }
             }
-            candidateView.showRecords(filteredCandidates);
+            candidateReadView.showRecords(filteredCandidates);
+        }
+        // if user clicked on "Find Candidate" Button
+        else if (e.getSource() == candidateEditView.getFind()) {
+
+            // reset(empty) the error message
+            candidateEditView.showError("");
+
+            // show dialog prompt to enter candidate id
+            String candidateIdPrompt = JOptionPane.showInputDialog("Please enter candidate id: ");
+
+            try {
+                int cId = Integer.parseInt(candidateIdPrompt);
+                // look for candidate by id
+                CandidateModel foundCandidate = this.findCandidateById(cId);
+                if (foundCandidate != null) {
+                    System.out.println("Id of the candidate:" + cId);
+                    System.out.println("Id of the candidate:" + foundCandidate);
+                    // find new candidate
+                    candidateEditView.addNewCandidatesButtons();
+                    candidateEditView.initEditFields(foundCandidate);
+                    windowView.getJframe().repaint();
+                }
+                else {
+                    candidateEditView.showError("Candidate with id " + cId + " does not exist.");
+                }
+
+            }
+            catch (NumberFormatException nfE ) {
+                // if user entered string instead of number, show error
+                candidateEditView.showError("Please enter only numbers");
+            }
+
+        }
+        else if (e.getSource() == candidateEditView.getAdd()) {
+            // add new candidate
+        }
+        else if (e.getSource() == candidateEditView.getRemove()) {
+            // remove candidate
+        }
+        // if user clicked on "Save" button
+        else if (e.getSource() == candidateEditView.getSave()) {
+           // save the changes to the candidate
         }
     }
 
-    public void showAllRecords() {
 
+    public CandidateModel findCandidateById(int id) {
+        for (CandidateModel candidate: this.candidates) {
+            if (candidate.getId() == id) {
+                return candidate;
+            }
+        }
+        return null;
     }
 
     @Override
