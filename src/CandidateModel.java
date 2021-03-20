@@ -47,6 +47,10 @@ public class CandidateModel {
         sectionScanner.close();
     }
 
+    public CandidateModel() {
+
+    }
+
 
     /*Getters and Setters*/
     public int getId() {
@@ -109,7 +113,7 @@ public class CandidateModel {
     public String toString() {
         return
                 "\nCandidate NO: " + id +
-                "\nName: " + firstName + lastName +
+                "\nName: " + firstName + " " + lastName +
                 "\nAddress: " + address + ", " + cityRegion +
                 "\nParty: '" + party + "'" +
                 "\nLocal Electoral Area: " + elecArea + "\n";

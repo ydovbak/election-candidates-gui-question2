@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.security.InvalidParameterException;
 
 public class EditCandidateView extends JPanel {
 
@@ -7,6 +8,7 @@ public class EditCandidateView extends JPanel {
     private JButton add = new JButton("Add New Candidate");
     private JButton remove = new JButton("Remove");
     private JButton save = new JButton("Save");
+    private JButton confirm = new JButton("Confirm Add");
 
     private JLabel idLab = new JLabel("ID: ");
     private JLabel fNameLab = new JLabel("First Name:");
@@ -28,7 +30,7 @@ public class EditCandidateView extends JPanel {
     private JPanel mainPanel = new JPanel();
 
     // temporary holder variables
-    private String currId;
+    private int currId;
 
 
 
@@ -87,11 +89,23 @@ public class EditCandidateView extends JPanel {
         this.setVisible(true);
     }
 
-    public void addNewCandidatesButtons() {
-
+    public void findCandidateButtons() {
+        menuPanel.remove(confirm);
         menuPanel.add(remove);
         menuPanel.add(save);
+        menuPanel.add(add);
+        addInputsAndLabels();
+    }
 
+    public void addNewCandidatesButtons() {
+        menuPanel.remove(remove);
+        menuPanel.remove(save);
+        menuPanel.add(add);
+        menuPanel.add(confirm);
+        addInputsAndLabels();
+    }
+
+    public void addInputsAndLabels() {
         // laying out the labels and input fields
         mainPanel.add(idLab);
         mainPanel.add(fNameLab);
@@ -106,10 +120,9 @@ public class EditCandidateView extends JPanel {
         mainPanel.add(partyField);
         mainPanel.add(constituencyLab);
         mainPanel.add(constituencyField);
-
-        //this.add(mainPanel);
-        //this.setVisible(true);
     }
+
+
 
     /**
      * Method is initialising the edit fields with data from candidate model
@@ -126,10 +139,60 @@ public class EditCandidateView extends JPanel {
     }
 
     /**
+     * Method is checking if all input fields are not empty
+     * @throws InvalidParameterException is thrown if one of the input fields is empty
+     */
+    public void validateInputs() throws InvalidParameterException {
+        if (fNameField.getText().length() == 0) {
+            throw new InvalidParameterException("First name field cannot be empty");
+        }
+        else if(lNameField.getText().length() == 0) {
+            throw new InvalidParameterException("Last name field cannot be empty");
+        }
+        else if(addressField.getText().length() == 0) {
+            throw new InvalidParameterException("Address field cannot be empty");
+        }
+        else if(cityRegionField.getText().length() == 0) {
+            throw new InvalidParameterException("City region field cannot be empty");
+        }
+        else if(partyField.getText().length() == 0) {
+            throw new InvalidParameterException("Party field cannot be empty");
+        }
+        else if(constituencyField.getText().length() == 0) {
+            throw new InvalidParameterException("Constituency field cannot be empty");
+        }
+    }
+
+    public void resetInputs() {
+        idLab.setText("ID: ");
+        fNameField.setText("");
+        lNameField.setText("");
+        addressField.setText("");
+        cityRegionField.setText("");
+        partyField.setText("");
+        constituencyField.setText("");
+    }
+
+    public boolean showConfirmDialog(CandidateModel candidate) {
+        int result = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this candidate: " + candidate,
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if(result == JOptionPane.YES_OPTION){
+            return true;
+        }else if (result == JOptionPane.NO_OPTION){
+            return false;
+        }else {
+            return false;
+        }
+    }
+
+    /**
      * Method is displaying the error message on the screen
      * @param errMsg the message that will be shown
      */
-    public void showError(String errMsg) {
+    public void showMessage(String errMsg) {
         warningLab.setText(errMsg);
     }
 
@@ -222,7 +285,15 @@ public class EditCandidateView extends JPanel {
         return idLab;
     }
 
-    public String getCurrId() {
+    public int getCurrId() {
         return currId;
+    }
+
+    public JButton getConfirm() {
+        return confirm;
+    }
+
+    public void setCurrId(int id) {
+        this.currId = id;
     }
 }
