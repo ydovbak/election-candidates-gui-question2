@@ -79,6 +79,7 @@ public class CandidateController extends JFrame implements ActionListener, Windo
 
         // populate the combo box
         ArrayList<String> areas = new ArrayList<>();
+        candidateReadView.getElectoralAreaComboBox().addItem("ANY"); // add option that will include all
         for (CandidateModel c : candidates) {
             String area = c.getElecArea();
 
@@ -109,12 +110,20 @@ public class CandidateController extends JFrame implements ActionListener, Windo
             // get the name of the area that was selected in combo box
             String area = (String) candidateReadView.getElectoralAreaComboBox().getSelectedItem();
             ArrayList<CandidateModel> filteredCandidates = new ArrayList<>();
-            for (CandidateModel c : candidates) {
-                if (c.getElecArea().equals(area)) {
-                    filteredCandidates.add(c);
-                }
+            if (area.equals("ANY")) {
+                // show all records
+                candidateReadView.showRecords(candidates);
             }
-            candidateReadView.showRecords(filteredCandidates);
+            else {
+                // show filtered records
+                for (CandidateModel c : candidates) {
+                    if (c.getElecArea().equals(area)) {
+                        filteredCandidates.add(c);
+                    }
+                }
+                candidateReadView.showRecords(filteredCandidates);
+            }
+
         }
         // if user clicked on "Find Candidate" Button
         else if (e.getSource() == candidateEditView.getFind()) {

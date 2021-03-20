@@ -1,2 +1,5 @@
-public class CandidatesSortedView {
+import javax.swing.*;
+
+public class CandidatesSortedView extends JPanel {
+
 }
