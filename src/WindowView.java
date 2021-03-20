@@ -8,6 +8,7 @@ public class WindowView  {
     private JFrame Jframe;
     private ReadCandidateView readCandidates;
     private EditCandidateView editCandidates;
+    private SortCandidateView sortCandidates;
     private JTabbedPane jTabbedPane;
 
 
@@ -15,12 +16,14 @@ public class WindowView  {
         Jframe = new JFrame();
         editCandidates = new EditCandidateView();
         readCandidates = new ReadCandidateView();
+        sortCandidates = new SortCandidateView();
         editCandidates.setLayout(new BoxLayout(editCandidates, BoxLayout.PAGE_AXIS));
 
         jTabbedPane = new JTabbedPane();
         jTabbedPane.setBounds(5, 5, 1200, 600);
         jTabbedPane.add("Read Candidates", readCandidates);
         jTabbedPane.add("Edit Candidates", editCandidates);
+        jTabbedPane.add("Sort Candidates", sortCandidates);
 
         Jframe.add(jTabbedPane);
 
@@ -33,6 +36,8 @@ public class WindowView  {
         Jframe.setLayout(null);
 
         Jframe.setVisible(true);
+
+
     }
 
     public void setWindowsListener(WindowListener w)
@@ -54,5 +59,9 @@ public class WindowView  {
 
     public JTabbedPane getjTabbedPane() {
         return jTabbedPane;
+    }
+
+    public SortCandidateView getSortCandidates() {
+        return sortCandidates;
     }
 }

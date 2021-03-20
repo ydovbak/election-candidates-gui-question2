@@ -7,12 +7,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class CandidateController extends JFrame implements ActionListener, WindowListener {
 
-    private ReadCandidateView candidateReadView;
-    private EditCandidateView candidateEditView;
+    private ReadCandidateView readCandidateView;
+    private EditCandidateView editCandidateView;
+    private SortCandidateView sortCandidateView;
     private WindowView windowView;
     private ArrayList<CandidateModel> candidates;
     private int numCandidates;
@@ -23,20 +25,22 @@ public class CandidateController extends JFrame implements ActionListener, Windo
         //candidateView = new CandidateView();
         //candidateView.init();
         windowView = new WindowView();
-        candidateReadView = windowView.getReadCandidates();
-        candidateEditView = windowView.getEditCandidates();
+        readCandidateView = windowView.getReadCandidates();
+        editCandidateView = windowView.getEditCandidates();
+        sortCandidateView = windowView.getSortCandidates();
 
-        candidateEditView.init();
-        candidateReadView.init();
+        editCandidateView.init();
+        readCandidateView.init();
+        sortCandidateView.init();
         windowView.setWindowsListener(this);
 
         // hook the action listener to Search button
-        candidateReadView.getSearch().addActionListener(this);
-        candidateEditView.getFind().addActionListener(this);
-        candidateEditView.getAdd().addActionListener(this);
-        candidateEditView.getRemove().addActionListener(this);
-        candidateEditView.getSave().addActionListener(this);
-        candidateEditView.getConfirm().addActionListener(this);
+        readCandidateView.getSearch().addActionListener(this);
+        editCandidateView.getFind().addActionListener(this);
+        editCandidateView.getAdd().addActionListener(this);
+        editCandidateView.getRemove().addActionListener(this);
+        editCandidateView.getSave().addActionListener(this);
+        editCandidateView.getConfirm().addActionListener(this);
 
         // create a file chooser for selecting files
         // that will be analysed and shown in program
@@ -77,56 +81,94 @@ public class CandidateController extends JFrame implements ActionListener, Windo
             e.printStackTrace();
         }
 
-        // populate the combo box
+        // populate the combo box in Read and Sort views
         ArrayList<String> areas = new ArrayList<>();
-        candidateReadView.getElectoralAreaComboBox().addItem("ANY"); // add option that will include all
+        ArrayList<String> partys = new ArrayList<>();
+        // add option that will include all
+        readCandidateView.getElectoralAreaComboBox().addItem("ANY");
+        sortCandidateView.getPartyComboBox().addItem("ANY");
         for (CandidateModel c : candidates) {
             String area = c.getElecArea();
 
             // adding only unique areas
             if (!areas.contains(area)) {
                 areas.add(area);
-                candidateReadView.getElectoralAreaComboBox().addItem(area);
+                readCandidateView.getElectoralAreaComboBox().addItem(area);
+            }
+
+            String party = c.getParty();
+            if (!partys.contains(party)) {
+                partys.add(party);
+                sortCandidateView.getPartyComboBox().addItem(party);
             }
         }
 
         // show all
-        candidateReadView.showRecords(candidates);
+        readCandidateView.showRecords(candidates);
+        sortCandidateView.showRecords(candidates);
+        sortCandidateView.setDisplayedCandidates(candidates);
 
         // save number of candidates
         // this variable will be used to create id for new candidates
         numCandidates = candidates.size();
+
+        // "Sort" clicked
+        sortCandidateView.getSort().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sortCandidates();
+            }
+        });
+
+        // "Search" clicked
+        sortCandidateView.getSearch().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sortSearchClicked();
+            }
+        });
+
+        // "Ascending" radio button clicked
+        sortCandidateView.getAscRButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sortCandidates();
+            }
+        });
+
+        // "Descending" radio button clicked
+        sortCandidateView.getDescRButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sortCandidates();
+            }
+        });
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
         // reset the warning message
-        candidateEditView.showMessage("");
+        editCandidateView.showMessage("");
 
         // if user clicked on search
-        if (e.getSource() == candidateReadView.getSearch()) {
+        if (e.getSource() == readCandidateView.getSearch()) {
 
             // get the name of the area that was selected in combo box
-            String area = (String) candidateReadView.getElectoralAreaComboBox().getSelectedItem();
+            String area = (String) readCandidateView.getElectoralAreaComboBox().getSelectedItem();
             ArrayList<CandidateModel> filteredCandidates = new ArrayList<>();
             if (area.equals("ANY")) {
                 // show all records
-                candidateReadView.showRecords(candidates);
-            }
-            else {
+                readCandidateView.showRecords(candidates);
+            } else {
                 // show filtered records
                 for (CandidateModel c : candidates) {
                     if (c.getElecArea().equals(area)) {
                         filteredCandidates.add(c);
                     }
                 }
-                candidateReadView.showRecords(filteredCandidates);
+                readCandidateView.showRecords(filteredCandidates);
             }
 
         }
         // if user clicked on "Find Candidate" Button
-        else if (e.getSource() == candidateEditView.getFind()) {
+        else if (e.getSource() == editCandidateView.getFind()) {
 
             // show dialog prompt to enter candidate id
             String candidateIdPrompt = JOptionPane.showInputDialog("Please enter candidate id: ");
@@ -136,63 +178,62 @@ public class CandidateController extends JFrame implements ActionListener, Windo
                 // look for candidate by id
                 CandidateModel foundCandidate = this.findCandidateById(cId);
                 if (foundCandidate != null) {
-                    candidateEditView.setCurrId(cId);
+                    editCandidateView.setCurrId(cId);
 
                     // find new candidate
-                    candidateEditView.findCandidateButtons();
+                    editCandidateView.findCandidateButtons();
 
                     // show candidate details in the input fields
-                    candidateEditView.initEditFields(foundCandidate);
+                    editCandidateView.initEditFields(foundCandidate);
                     windowView.getJframe().repaint();
                 } else {
-                    candidateEditView.showMessage("Candidate with id " + cId + " does not exist.");
+                    editCandidateView.showMessage("Candidate with id " + cId + " does not exist.");
                 }
 
             } catch (NumberFormatException nfE) {
                 // if user entered string instead of number, show error
-                candidateEditView.showMessage("Please enter only numbers");
+                editCandidateView.showMessage("Please enter only numbers");
             }
 
-        } else if (e.getSource() == candidateEditView.getAdd()) {
+        } else if (e.getSource() == editCandidateView.getAdd()) {
 
             // show add new candidate interface
-            candidateEditView.addNewCandidatesButtons();
-            candidateEditView.resetInputs();
+            editCandidateView.addNewCandidatesButtons();
+            editCandidateView.resetInputs();
             windowView.getJframe().repaint();
 
-        } else if (e.getSource() == candidateEditView.getConfirm()) {
+        } else if (e.getSource() == editCandidateView.getConfirm()) {
 
             // add new candidate
             addNewCandidate();
             // update the output
-            candidateReadView.showRecords(candidates);
+            readCandidateView.showRecords(candidates);
 
-        } else if (e.getSource() == candidateEditView.getRemove()) {
+        } else if (e.getSource() == editCandidateView.getRemove()) {
             // remove candidate
-            int candidateId = candidateEditView.getCurrId();
+            int candidateId = editCandidateView.getCurrId();
             CandidateModel deleteCandidate = findCandidateById(candidateId);
 
             if (deleteCandidate != null) {
                 // if user accepts deletion, delete the candidate
-                if (candidateEditView.showConfirmDialog(deleteCandidate)) {
+                if (editCandidateView.showConfirmDialog(deleteCandidate)) {
                     candidates.remove(deleteCandidate);
-                    candidateEditView.showMessage("Candidate with ID " + candidateId + " was deleted successfully");
+                    editCandidateView.showMessage("Candidate with ID " + candidateId + " was deleted successfully");
                     // update the output
-                    candidateEditView.resetInputs();
-                    candidateReadView.showRecords(candidates);
-                }
-                else {
-                    candidateEditView.showMessage("Candidate with ID " + candidateId + " was not deleted");
+                    editCandidateView.resetInputs();
+                    readCandidateView.showRecords(candidates);
+                } else {
+                    editCandidateView.showMessage("Candidate with ID " + candidateId + " was not deleted");
                 }
             }
         }
         // if user clicked on "Save" button
-        else if (e.getSource() == candidateEditView.getSave()) {
+        else if (e.getSource() == editCandidateView.getSave()) {
             // save the changes to the candidate
-            int candidateId = candidateEditView.getCurrId();
+            int candidateId = editCandidateView.getCurrId();
             saveCandidateEdit(candidateId);
             // update the output
-            candidateReadView.showRecords(candidates);
+            readCandidateView.showRecords(candidates);
         }
     }
 
@@ -208,21 +249,21 @@ public class CandidateController extends JFrame implements ActionListener, Windo
 
     public void saveCandidateEdit(int id) {
         try {
-            candidateEditView.validateInputs();
+            editCandidateView.validateInputs();
             CandidateModel editedCandidate = findCandidateById(id);
 
-            editedCandidate.setFirstName(candidateEditView.getfNameField().getText());
-            editedCandidate.setLastName(candidateEditView.getlNameField().getText());
-            editedCandidate.setAddress(candidateEditView.getAddressField().getText());
-            editedCandidate.setCityRegion(candidateEditView.getCityRegionField().getText());
-            editedCandidate.setParty(candidateEditView.getPartyField().getText());
-            editedCandidate.setElecArea(candidateEditView.getConstituencyField().getText());
-            candidateEditView.showMessage("The candidate with ID " + editedCandidate.getId() + " was edited successfully");
-            candidateEditView.resetInputs();
+            editedCandidate.setFirstName(editCandidateView.getfNameField().getText());
+            editedCandidate.setLastName(editCandidateView.getlNameField().getText());
+            editedCandidate.setAddress(editCandidateView.getAddressField().getText());
+            editedCandidate.setCityRegion(editCandidateView.getCityRegionField().getText());
+            editedCandidate.setParty(editCandidateView.getPartyField().getText());
+            editedCandidate.setElecArea(editCandidateView.getConstituencyField().getText());
+            editCandidateView.showMessage("The candidate with ID " + editedCandidate.getId() + " was edited successfully");
+            editCandidateView.resetInputs();
             return;
 
         } catch (InvalidParameterException ipE) {
-            candidateEditView.showMessage(ipE.getMessage());
+            editCandidateView.showMessage(ipE.getMessage());
         }
 
     }
@@ -231,24 +272,82 @@ public class CandidateController extends JFrame implements ActionListener, Windo
         // validate inputs
         try {
             // if validate method is not throwing errors, then fields are not empty
-            candidateEditView.validateInputs();
+            editCandidateView.validateInputs();
             CandidateModel newCandidate = new CandidateModel();
             // increment the local number if candidates, use it as id of new candidate
             numCandidates++;
             newCandidate.setId(numCandidates);
-            newCandidate.setFirstName(candidateEditView.getfNameField().getText());
-            newCandidate.setLastName(candidateEditView.getlNameField().getText());
-            newCandidate.setAddress(candidateEditView.getAddressField().getText());
-            newCandidate.setCityRegion(candidateEditView.getCityRegionField().getText());
-            newCandidate.setParty(candidateEditView.getPartyField().getText());
-            newCandidate.setElecArea(candidateEditView.getConstituencyField().getText());
+            newCandidate.setFirstName(editCandidateView.getfNameField().getText());
+            newCandidate.setLastName(editCandidateView.getlNameField().getText());
+            newCandidate.setAddress(editCandidateView.getAddressField().getText());
+            newCandidate.setCityRegion(editCandidateView.getCityRegionField().getText());
+            newCandidate.setParty(editCandidateView.getPartyField().getText());
+            newCandidate.setElecArea(editCandidateView.getConstituencyField().getText());
 
             // save new candidate in local ArrayList
             candidates.add(newCandidate);
-            candidateEditView.showMessage(newCandidate.getFirstName() + " " + newCandidate.getLastName() + " candidate with ID " + numCandidates + " was added successfully");
-            candidateEditView.resetInputs();
+            editCandidateView.showMessage(newCandidate.getFirstName() + " " + newCandidate.getLastName() + " candidate with ID " + numCandidates + " was added successfully");
+            editCandidateView.resetInputs();
         } catch (InvalidParameterException ipE) {
-            candidateEditView.showMessage(ipE.getMessage());
+            editCandidateView.showMessage(ipE.getMessage());
+        }
+    }
+
+    public void sortSearchClicked() {
+
+        // get the name of the area that was selected in combo box
+        String party = (String) sortCandidateView.getPartyComboBox().getSelectedItem();
+        ArrayList<CandidateModel> filteredCandidates = new ArrayList<>();
+        if (party.equals("ANY")) {
+            // show all records
+            sortCandidateView.showRecords(candidates);
+            sortCandidateView.setDisplayedCandidates(candidates);
+        } else {
+            // show filtered records
+            for (CandidateModel c : candidates) {
+                if (c.getParty().equals(party)) {
+                    filteredCandidates.add(c);
+                }
+            }
+            sortCandidateView.showRecords(filteredCandidates);
+            sortCandidateView.setDisplayedCandidates(filteredCandidates);
+        }
+
+    }
+
+    public void sortCandidates() {
+        String sortBy = (String) sortCandidateView.getSortComboBox().getSelectedItem();
+        // set the sorting method according to user choice
+        setSortingMethod(sortBy);
+        ArrayList<CandidateModel> displayedCandidates = sortCandidateView.getDisplayedCandidates();
+        if (sortCandidateView.getAscRButton().isSelected()) {
+            Collections.sort(displayedCandidates);
+        }
+        else {
+            Collections.sort(displayedCandidates, Collections.reverseOrder());
+        }
+
+        sortCandidateView.showRecords(displayedCandidates);
+    }
+
+    /**
+     * MEthod sets the sorting method of Candidates
+     *
+     * @param sortBy String representation of the sorting method
+     */
+    public void setSortingMethod(String sortBy) {
+        if (sortBy.equals("Id")) {
+            CandidateModel.setSortingMethod(1);
+        } else if (sortBy.equals("First Name")) {
+            CandidateModel.setSortingMethod(2);
+        } else if (sortBy.equals("Last Name")) {
+            CandidateModel.setSortingMethod(3);
+        } else if (sortBy.equals("Address")) {
+            CandidateModel.setSortingMethod(4);
+        } else if (sortBy.equals("Party")) {
+            CandidateModel.setSortingMethod(5);
+        } else if (sortBy.equals("Constituency")) {
+            CandidateModel.setSortingMethod(6);
         }
     }
 
