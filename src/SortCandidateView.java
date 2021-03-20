@@ -4,31 +4,48 @@ import java.util.ArrayList;
 
 import static java.awt.ComponentOrientation.LEFT_TO_RIGHT;
 
-public class SortCandidateView extends JPanel{
+public class SortCandidateView extends JPanel {
 
-    private JComboBox<String> partyComboBox = new JComboBox<String>();
-    private JComboBox<String> sortComboBox = new JComboBox<String>();
-    private JLabel partyLabel = new JLabel( "Party");
-    private JLabel sortByLabel = new JLabel( " |      Sort By");
-    private JButton search = new JButton("Search");
-    private JButton sort = new JButton("Sort");
-    private JRadioButton ascRButton = new JRadioButton("Ascending");
-    private JRadioButton descRButton = new JRadioButton("Descending");
-    ButtonGroup group = new ButtonGroup();      // only one radio button can be selected, if inside the group
+    private JComboBox<String> partyComboBox;
+    private JComboBox<String> sortComboBox;
 
-    // all data displayed here
-    private JTextArea dataDisplayArea = new JTextArea(30, 90);
+    private JLabel partyLabel;
+    private JLabel sortByLabel;
+    private JButton search;
+    private JButton sort;
 
-    private ArrayList<CandidateModel> displayedCandidates = new ArrayList<>();
+    private ButtonGroup group;
+    private JRadioButton ascRButton;
+    private JRadioButton descRButton;
 
-    // make display area scrollable
-    JScrollPane scroll = new JScrollPane (dataDisplayArea,
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    private JTextArea dataDisplayArea;
+    private JScrollPane scroll;
 
+    // local copy of records displayed on the panel
+    private ArrayList<CandidateModel> displayedCandidates;
 
     public SortCandidateView() {
-        //this.setSize(1200, 650);
+        partyComboBox = new JComboBox<String>();
+        sortComboBox = new JComboBox<String>();
+        partyLabel = new JLabel("Party");
+        sortByLabel = new JLabel(" |      Sort By");
+        search = new JButton("Search");
+        sort = new JButton("Sort");
+        ascRButton = new JRadioButton("Ascending");
+        descRButton = new JRadioButton("Descending");
+
+        // only one radio button can be selected, if inside the group
+        group = new ButtonGroup();
+
+        // all data displayed here
+        dataDisplayArea = new JTextArea(30, 90);
+
+        displayedCandidates = new ArrayList<>();
+
+        // make display area scrollable
+        scroll = new JScrollPane(dataDisplayArea,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
 
     public void init() {
@@ -39,6 +56,7 @@ public class SortCandidateView extends JPanel{
         sortComboBox.addItem("Address");
         sortComboBox.addItem("Party");
         sortComboBox.addItem("Constituency");
+
         // set the layouts
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
 
@@ -59,7 +77,6 @@ public class SortCandidateView extends JPanel{
         sortingPanel.add(ascRButton);
         sortingPanel.add(descRButton);
         sortingPanel.add(sort);
-
 
         // add everything to main content pane
         this.add(comboBoxPanel);

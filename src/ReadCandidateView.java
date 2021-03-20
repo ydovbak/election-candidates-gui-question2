@@ -4,25 +4,27 @@ import java.util.ArrayList;
 
 public class ReadCandidateView extends JPanel{
 
-    // search criteria
-    private JComboBox<String> electoralAreaComboBox = new JComboBox<String>();
-    private JLabel constituencyLabel = new JLabel( "Constituency");
-    private JButton search = new JButton("Search");
 
-    // all data displayed here
-    private JTextArea dataDisplayArea = new JTextArea(30, 90);
-
-    // make display area scrollable
-    JScrollPane scroll = new JScrollPane (dataDisplayArea,
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
+    private JComboBox<String> electoralAreaComboBox;
+    private JLabel constituencyLabel;
+    private JButton search;
+    private JTextArea dataDisplayArea;
+    private JScrollPane scroll;
 
     public ReadCandidateView() {
-        //this.contentPane = contentPane;
-        //this.setTitle("Elections Registry");
-        this.setSize(1200, 650);
-        //this.setResizable(false);
+
+        // search criteria combo box
+        electoralAreaComboBox = new JComboBox<String>();
+        constituencyLabel = new JLabel( "Constituency");
+        search = new JButton("Search");
+
+        // all data displayed here
+        dataDisplayArea = new JTextArea(30, 90);
+
+        // make display area scrollable
+        scroll = new JScrollPane (dataDisplayArea,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
 
     public void init() {
@@ -41,7 +43,6 @@ public class ReadCandidateView extends JPanel{
         this.add(optionsPanel);
         this.add(scroll);
         this.setVisible(true);
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void showRecords(ArrayList<CandidateModel> candidates) {
@@ -50,7 +51,6 @@ public class ReadCandidateView extends JPanel{
         for (CandidateModel c : candidates) {
             textToPrint += c + "\n";
         }
-
 
         dataDisplayArea.setText(textToPrint);
         dataDisplayArea.setCaretPosition(0); // display at start

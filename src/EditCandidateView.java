@@ -7,7 +7,7 @@ public class EditCandidateView extends JPanel {
     private JButton find = new JButton("Find Candidate");
     private JButton add = new JButton("Add New Candidate");
     private JButton remove = new JButton("Remove");
-    private JButton save = new JButton("Save");
+    private JButton save = new JButton("Save Edit");
     private JButton confirm = new JButton("Confirm Add");
 
     private JLabel idLab = new JLabel("ID: ");
@@ -32,63 +32,49 @@ public class EditCandidateView extends JPanel {
     // temporary holder variables
     private int currId;
 
-
-
-    public EditCandidateView()
-    {
-        //this.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
-        //this.setSize(600, 500);
-        //this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-    }
-
-
     public void init()
     {
-        // adding buttons to the menu panel
-//        menuPanel.add(add);
-//        menuPanel.add(remove);
-//        menuPanel.add(print);
-//
-//        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-//
-//        // laying out the labels and input fields
-//        mainPanel.add(fNameLab);
-//        mainPanel.add(fNameField);
-//        mainPanel.add(lNameLab);
-//        mainPanel.add(lNameField);
-//        mainPanel.add(addressLab);
-//        mainPanel.add(addressField);
-//        mainPanel.add(cityRegionLab);
-//        mainPanel.add(cityRegionField);
-//        mainPanel.add(partyLab);
-//        mainPanel.add(partyField);
-//        mainPanel.add(constituencyLab);
-//        mainPanel.add(constituencyField);
-//
-//        // make print area scrollable
-////        printPanel.setLayout(new BorderLayout());
-////        JScrollPane scroll = new JScrollPane(printArea);
-////        printPanel.add(printLab, BorderLayout.NORTH);
-////        printPanel.add(scroll, BorderLayout.CENTER);
-//
-//
-//        this.add(menuPanel);
-//        this.add(mainPanel);
-
-        // at the beginning you can only find candidate or add new one
-
         menuPanel.add(find);
         menuPanel.add(add);
-
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
         mainPanel.add(warningLab);
+
+        // set color of the warning message
         warningLab.setForeground(new Color(128,0,0));
+
         this.add(menuPanel);
         this.add(mainPanel);
-
         this.setVisible(true);
     }
 
+    /**
+     * Removing all labels and input fields, leaving only two options
+     * available "Find Candidate" and "Add New Candidate"
+     */
+    public void setMainMenuButtons() {
+        menuPanel.remove(confirm);
+        menuPanel.remove(save);
+        menuPanel.remove(remove);
+        menuPanel.remove(confirm);
+        mainPanel.remove(idLab);
+        mainPanel.remove(fNameLab);
+        mainPanel.remove(fNameField);
+        mainPanel.remove(lNameLab);
+        mainPanel.remove(lNameField);
+        mainPanel.remove(addressLab);
+        mainPanel.remove(addressField);
+        mainPanel.remove(cityRegionLab);
+        mainPanel.remove(cityRegionField);
+        mainPanel.remove(partyLab);
+        mainPanel.remove(partyField);
+        mainPanel.remove(constituencyLab);
+        mainPanel.remove(constituencyField);
+    }
+
+    /**
+     * Showing buttons, labels and input fields after
+     * "Find Candidate" button clicked
+     */
     public void findCandidateButtons() {
         menuPanel.remove(confirm);
         menuPanel.add(remove);
@@ -97,7 +83,11 @@ public class EditCandidateView extends JPanel {
         addInputsAndLabels();
     }
 
-    public void addNewCandidatesButtons() {
+    /**
+     * Showing buttons, labels and input fields after
+     * "Add New Candidate" button clicked
+     */
+    public void showAddNewCandidatesButtons() {
         menuPanel.remove(remove);
         menuPanel.remove(save);
         menuPanel.add(add);
@@ -105,6 +95,9 @@ public class EditCandidateView extends JPanel {
         addInputsAndLabels();
     }
 
+    /**
+     * Showing all inputs and labels
+     */
     public void addInputsAndLabels() {
         // laying out the labels and input fields
         mainPanel.add(idLab);
@@ -121,7 +114,6 @@ public class EditCandidateView extends JPanel {
         mainPanel.add(constituencyLab);
         mainPanel.add(constituencyField);
     }
-
 
 
     /**
@@ -163,6 +155,9 @@ public class EditCandidateView extends JPanel {
         }
     }
 
+    /**
+     * Clear all input fields
+     */
     public void resetInputs() {
         idLab.setText("ID: ");
         fNameField.setText("");
@@ -173,6 +168,11 @@ public class EditCandidateView extends JPanel {
         constituencyField.setText("");
     }
 
+    /**
+     * Shows the dialog that confirms if user wants to delete the record or not
+     * @param candidate object that may be deleted
+     * @return true if user slicks "Yes", false if "No"
+     */
     public boolean showConfirmDialog(CandidateModel candidate) {
         int result = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to delete this candidate: " + candidate,
@@ -195,11 +195,6 @@ public class EditCandidateView extends JPanel {
     public void showMessage(String errMsg) {
         warningLab.setText(errMsg);
     }
-
-//    public void setWindowsListener(WindowListener w)
-//    {
-//        this.addWindowListener(w);
-//    }
 
     public JButton getAdd() {
         return add;

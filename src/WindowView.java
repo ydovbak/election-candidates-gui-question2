@@ -11,33 +11,31 @@ public class WindowView  {
     private SortCandidateView sortCandidates;
     private JTabbedPane jTabbedPane;
 
-
     public WindowView() {
         Jframe = new JFrame();
+
+        // create all the panels
         editCandidates = new EditCandidateView();
         readCandidates = new ReadCandidateView();
         sortCandidates = new SortCandidateView();
         editCandidates.setLayout(new BoxLayout(editCandidates, BoxLayout.PAGE_AXIS));
 
+        // create tabbed view
         jTabbedPane = new JTabbedPane();
         jTabbedPane.setBounds(5, 5, 1200, 600);
+
+        // adding panels to the tabbed view
         jTabbedPane.add("Read Candidates", readCandidates);
         jTabbedPane.add("Edit Candidates", editCandidates);
         jTabbedPane.add("Sort Candidates", sortCandidates);
 
+        // adding tabbed view to the main frame
         Jframe.add(jTabbedPane);
 
-        //readCandidates.init();
-        //editCandidates.init();
-
-        //this.setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
         Jframe.setSize(1200, 750);
         Jframe.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         Jframe.setLayout(null);
-
         Jframe.setVisible(true);
-
-
     }
 
     public void setWindowsListener(WindowListener w)
