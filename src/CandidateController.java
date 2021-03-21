@@ -4,6 +4,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,8 +42,6 @@ public class CandidateController extends JFrame implements WindowListener {
         // that will be analysed and shown in program
         try {
             // initially set to null
-            //File selectedFile = new File("/Users/yuliiadovbak/Desktop/dcccandidatesforlocalelection2009p20120822-1410.csv");
-            //File selectedFile = new File("C:\\Users\\Julia\\Documents\\Year 2\\SoftDev\\projects\\election-candidates-gui-question2\\elections-data.csv");
 
             selectedFile = null;
             // create file chooser for browsing local files
@@ -56,9 +55,9 @@ public class CandidateController extends JFrame implements WindowListener {
             {
                 selectedFile = fileChooser.getSelectedFile();
             }
-            System.out.println(selectedFile.getAbsolutePath());
+
             // reading in the file
-            Scanner in = new Scanner(new FileInputStream(selectedFile));
+            Scanner in = new Scanner(new FileInputStream(selectedFile), StandardCharsets.ISO_8859_1);
 
             // the fist line in csv contains headings, saving them
             if (in.hasNextLine()) {
@@ -538,27 +537,30 @@ public class CandidateController extends JFrame implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        editCandidateView.showDialog("All changes are saved in the file");
-        // save change to the file
-        try
-        {
-            // fetching content, that will be written to the file
-            String content = fileTitle + "\n" + fileHeadings;
-            for (CandidateModel candidateModel : candidates) {
-                content += "\n" + candidateModel.getCsvLine();
+        // ask if user wants to save changes in the file
+        boolean saveConfirmed = editCandidateView.showConfirmDialog("Do you want to save all the changes to the file? ");
+
+        if (saveConfirmed) {
+            // save change to the file
+            try
+            {
+                // fetching content, that will be written to the file
+                String content = fileTitle + "\n" + fileHeadings;
+                for (CandidateModel candidateModel : candidates) {
+                    content += "\n" + candidateModel.getCsvLine();
+                }
+
+                //Writing content to the i-th file
+                PrintWriter pw = new PrintWriter(selectedFile, StandardCharsets.ISO_8859_1);
+                pw.print(content);
+                pw.close(); //Saving
+
             }
-
-            //Writing content to the i-th file
-            PrintWriter pw = new PrintWriter(selectedFile);
-            pw.print(content);
-            pw.close(); //Saving
-
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
         }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
 
         System.exit(0);
     }

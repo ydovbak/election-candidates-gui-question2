@@ -191,6 +191,24 @@ public class EditCandidateView extends JPanel {
     }
 
     /**
+     * Shows the dialog that confirms if user wants to do something
+     * @return true if user slicks "Yes", false if "No"
+     */
+    public boolean showConfirmDialog(String msg) {
+        int result = JOptionPane.showConfirmDialog(this,
+                msg, "Confirm",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if(result == JOptionPane.YES_OPTION){
+            return true;
+        }else if (result == JOptionPane.NO_OPTION){
+            return false;
+        }else {
+            return false;
+        }
+    }
+
+    /**
      * Shows a notification dialog that sais that an action was done successfully/not successfully
      */
     public void showDialog(String msg) {
