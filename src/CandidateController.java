@@ -3,6 +3,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.PrintWriter;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +17,12 @@ public class CandidateController extends JFrame implements WindowListener {
     private WindowView windowView;
     private ArrayList<CandidateModel> candidates;
     private int numCandidates;
+    private File selectedFile;
+
+    // save the head of csv, will be used when writing to file
+    String fileTitle;
+    String fileHeadings;
+
 
     public CandidateController() {
 
@@ -35,32 +42,39 @@ public class CandidateController extends JFrame implements WindowListener {
         try {
             // initially set to null
             //File selectedFile = new File("/Users/yuliiadovbak/Desktop/dcccandidatesforlocalelection2009p20120822-1410.csv");
-            File selectedFile = new File("C:\\Users\\Julia\\Documents\\Year 2\\SoftDev\\projects\\election-candidates-gui-question2\\elections-data.csv");
-//
-//            // create file chooser for browsing local files
-//            JFileChooser fileChooser = new JFileChooser();
-//
-//            // set the directory where the file chooser will be opened
-//            fileChooser.setCurrentDirectory(new File(".\\"));
-//
-//            // if user chooses the file and clicks "ok", we get the selected file
-//            if (fileChooser.showOpenDialog(getContentPane()) == JFileChooser.APPROVE_OPTION)
-//            {
-//                selectedFile = fileChooser.getSelectedFile();
-//            }
-//            System.out.println(selectedFile.getAbsolutePath());
+            //File selectedFile = new File("C:\\Users\\Julia\\Documents\\Year 2\\SoftDev\\projects\\election-candidates-gui-question2\\elections-data.csv");
+
+            selectedFile = null;
+            // create file chooser for browsing local files
+            JFileChooser fileChooser = new JFileChooser();
+
+            // set the directory where the file chooser will be opened
+            fileChooser.setCurrentDirectory(new File(".\\"));
+
+            // if user chooses the file and clicks "ok", we get the selected file
+            if (fileChooser.showOpenDialog(getContentPane()) == JFileChooser.APPROVE_OPTION)
+            {
+                selectedFile = fileChooser.getSelectedFile();
+            }
+            System.out.println(selectedFile.getAbsolutePath());
             // reading in the file
             Scanner in = new Scanner(new FileInputStream(selectedFile));
 
-            // the fist line in csv contains headings, so skipping them
+            // the fist line in csv contains headings, saving them
             if (in.hasNextLine()) {
-                in.nextLine();
-                in.nextLine();
+                fileTitle = in.nextLine();
+                fileHeadings = in.nextLine();
             }
 
             // reading in every line in csv, converting them into Candidate objects
             while (in.hasNextLine()) {
-                candidates.add(new CandidateModel(in.nextLine()));
+                CandidateModel candidate = getModelFromCsv(in.nextLine());
+
+                // if candidate model was not extracted from csv, it will be null
+                if (candidate != null) {
+                    candidates.add(candidate);
+                }
+
             }
 
             // close the scanner
@@ -95,7 +109,9 @@ public class CandidateController extends JFrame implements WindowListener {
         // show all records in the READ and SORT tabs
         readCandidateView.showRecords(candidates);
         sortCandidateView.showRecords(candidates);
-        sortCandidateView.setDisplayedCandidates(candidates);
+        sortCandidateView.setDisplayedCandidates((ArrayList<CandidateModel>) candidates.clone());
+        windowView.hideEdit();
+        windowView.hideSort();
 
         // save number of candidates
         // this variable will be used to create id for new candidates
@@ -149,6 +165,9 @@ public class CandidateController extends JFrame implements WindowListener {
      */
     public void readSearchClicked() {
 
+        windowView.hideEdit();
+        windowView.hideSort();
+
         // get the name of the area that was selected in combo box
         String area = (String) readCandidateView.getElectoralAreaComboBox().getSelectedItem();
         ArrayList<CandidateModel> filteredCandidates = new ArrayList<>();
@@ -175,6 +194,7 @@ public class CandidateController extends JFrame implements WindowListener {
      * the display of the records data that was found
      */
     public void findCandidateClicked() {
+
         // reset warning message
         editCandidateView.showMessage("");
 
@@ -212,6 +232,11 @@ public class CandidateController extends JFrame implements WindowListener {
      * Shows the corresponding interface to enable inputs for new record data
      */
     public void addNewCandidateClicked() {
+
+        // hide other panels
+        windowView.hideRead();
+        windowView.hideSort();
+
         // reset warning message
         editCandidateView.showMessage("");
 
@@ -222,7 +247,7 @@ public class CandidateController extends JFrame implements WindowListener {
         editCandidateView.resetInputs();
 
         // show the changes
-        editCandidateView.repaint();
+        windowView.getJframe().repaint();
     }
 
     /**
@@ -251,7 +276,7 @@ public class CandidateController extends JFrame implements WindowListener {
             // if user accepts deletion, delete the candidate
             if (editCandidateView.showConfirmDialog(deleteCandidate)) {
                 candidates.remove(deleteCandidate);
-                editCandidateView.showMessage("Candidate with ID " + candidateId + " was deleted successfully");
+                editCandidateView.showDialog("Candidate with ID " + candidateId + " was deleted successfully");
 
                 // update the output
                 editCandidateView.resetInputs();
@@ -260,7 +285,7 @@ public class CandidateController extends JFrame implements WindowListener {
                 // reset the menu buttons
                 editCandidateView.setMainMenuButtons();
             } else {
-                editCandidateView.showMessage("Candidate with ID " + candidateId + " was not deleted");
+                editCandidateView.showDialog("Candidate with ID " + candidateId + " was not deleted");
             }
         }
     }
@@ -326,7 +351,7 @@ public class CandidateController extends JFrame implements WindowListener {
             editedCandidate.setCityRegion(editCandidateView.getCityRegionField().getText());
             editedCandidate.setParty(editCandidateView.getPartyField().getText());
             editedCandidate.setElecArea(editCandidateView.getConstituencyField().getText());
-            editCandidateView.showMessage("The candidate with ID " + editedCandidate.getId() + " was edited successfully");
+            editCandidateView.showDialog("The candidate with ID " + editedCandidate.getId() + " was edited successfully");
             editCandidateView.resetInputs();
 
         } catch (InvalidParameterException ipE) {
@@ -357,9 +382,12 @@ public class CandidateController extends JFrame implements WindowListener {
 
             // save new candidate in local ArrayList
             candidates.add(newCandidate);
-            editCandidateView.showMessage(newCandidate.getFirstName() + " "
+            editCandidateView.showDialog(newCandidate.getFirstName() + " "
                     + newCandidate.getLastName() + " candidate with ID " + numCandidates + " was added successfully");
             editCandidateView.resetInputs();
+
+            // reset warning msg
+            editCandidateView.showMessage("");
 
             // reset the menu buttons
             editCandidateView.setMainMenuButtons();
@@ -383,16 +411,19 @@ public class CandidateController extends JFrame implements WindowListener {
         // fetching records that are displayed on the screen right now
         ArrayList<CandidateModel> displayedCandidates = sortCandidateView.getDisplayedCandidates();
 
+        // helper variable to display sorted items without changing the original order of items
+        ArrayList<CandidateModel> sortedCandidates = new ArrayList<>(displayedCandidates);
+
         // sorting records asc or desc according to the radio button that were selected
         if (sortCandidateView.getAscRButton().isSelected()) {
-            Collections.sort(displayedCandidates);
+            Collections.sort(sortedCandidates);
         }
         else {
-            Collections.sort(displayedCandidates, Collections.reverseOrder());
+            Collections.sort(sortedCandidates, Collections.reverseOrder());
         }
 
         // update the output
-        sortCandidateView.showRecords(displayedCandidates);
+        sortCandidateView.showRecords(sortedCandidates);
     }
 
     /**
@@ -425,6 +456,81 @@ public class CandidateController extends JFrame implements WindowListener {
         return null;
     }
 
+
+    /**
+     * Method is parsing the data from csv line into an object of CandidateModel
+     * @param csvLine a line from CSV file that was provided
+     * @return  an object of CandidateModel if CSV line was correct,
+     *          null if CSV line was faulty (contained invalid arguments)
+     */
+    public CandidateModel getModelFromCsv(String csvLine) {
+        Scanner sectionScanner = new Scanner(csvLine);
+
+        // using " delimiter to separate out address from the rest of the csv line
+        sectionScanner.useDelimiter("\"");
+
+        String beforeQuotesSection = "";
+        String address = "";
+        String afterQuotesSection = "";
+
+        // try delimiting the csv line into three parts
+        if (sectionScanner.hasNext()) {
+            // id, first name, last name
+            beforeQuotesSection = sectionScanner.next();
+        }
+
+        if (sectionScanner.hasNext()) {
+            // address
+            address = sectionScanner.next();
+        }
+
+        if (sectionScanner.hasNext()) {
+            // party, electoral area
+            afterQuotesSection = sectionScanner.next();
+        }
+        sectionScanner.close();
+
+        // if the strings are not empty, there is data in it, creating new object of Candidate
+        if (beforeQuotesSection.length() > 0 && address.length() > 0 && afterQuotesSection.length() > 0) {
+            CandidateModel newCandidate = new CandidateModel();
+
+            // extracting data from first section
+            String[] nameParts = beforeQuotesSection.split(",");
+            int id = Integer.parseInt(nameParts[0]);
+            String lastName = nameParts[1];
+            String firstName = nameParts[2];
+
+            // extracting data from address section
+            String[] addressParts = address.split(",");
+
+            String add = "";
+            for (int i = 0; i < addressParts.length - 1; i++) {
+                // address only here
+                add += addressParts[i];
+                if (i != addressParts.length - 2)
+                    add += ",";
+            }
+            String candAddress = add;
+            String cityRegion = addressParts[addressParts.length - 1];
+
+            // removing extra space if its there
+            if (cityRegion.charAt(0) == ' ' )
+            {
+                cityRegion = cityRegion.substring(1);
+            }
+
+            // extracting data from third section
+            String[] partyParts = afterQuotesSection.split(",");
+            String party = partyParts[1];
+            String elecArea = partyParts[2];
+
+            return new CandidateModel(id, firstName, lastName, candAddress, cityRegion, party, elecArea);
+        }
+        else {
+            return null;
+        }
+    }
+
     @Override
     public void windowOpened(WindowEvent e) {
         System.out.println("window started");
@@ -432,6 +538,28 @@ public class CandidateController extends JFrame implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
+        editCandidateView.showDialog("All changes are saved in the file");
+        // save change to the file
+        try
+        {
+            // fetching content, that will be written to the file
+            String content = fileTitle + "\n" + fileHeadings;
+            for (CandidateModel candidateModel : candidates) {
+                content += "\n" + candidateModel.getCsvLine();
+            }
+
+            //Writing content to the i-th file
+            PrintWriter pw = new PrintWriter(selectedFile);
+            pw.print(content);
+            pw.close(); //Saving
+
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+
         System.exit(0);
     }
 

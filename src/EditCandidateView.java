@@ -1,5 +1,7 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.security.InvalidParameterException;
 
 public class EditCandidateView extends JPanel {
@@ -77,9 +79,9 @@ public class EditCandidateView extends JPanel {
      */
     public void findCandidateButtons() {
         menuPanel.remove(confirm);
+        menuPanel.add(add);
         menuPanel.add(remove);
         menuPanel.add(save);
-        menuPanel.add(add);
         addInputsAndLabels();
     }
 
@@ -175,7 +177,7 @@ public class EditCandidateView extends JPanel {
      */
     public boolean showConfirmDialog(CandidateModel candidate) {
         int result = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete this candidate: " + candidate,
+                "Are you sure you want to delete this candidate: \n" + candidate,
                 "Confirm Delete",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
@@ -186,6 +188,13 @@ public class EditCandidateView extends JPanel {
         }else {
             return false;
         }
+    }
+
+    /**
+     * Shows a notification dialog that sais that an action was done successfully/not successfully
+     */
+    public void showDialog(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
     }
 
     /**
