@@ -34,15 +34,14 @@ public class EditCandidateView extends JPanel {
     // temporary holder variables
     private int currId;
 
-    public void init()
-    {
+    public void init() {
         menuPanel.add(find);
         menuPanel.add(add);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
         mainPanel.add(warningLab);
 
         // set color of the warning message
-        warningLab.setForeground(new Color(128,0,0));
+        warningLab.setForeground(new Color(128, 0, 0));
 
         this.add(menuPanel);
         this.add(mainPanel);
@@ -120,6 +119,7 @@ public class EditCandidateView extends JPanel {
 
     /**
      * Method is initialising the edit fields with data from candidate model
+     *
      * @param candidateModel data that will be displayed in the input fields
      */
     public void initEditFields(CandidateModel candidateModel) {
@@ -134,25 +134,21 @@ public class EditCandidateView extends JPanel {
 
     /**
      * Method is checking if all input fields are not empty
+     *
      * @throws InvalidParameterException is thrown if one of the input fields is empty
      */
     public void validateInputs() throws InvalidParameterException {
         if (fNameField.getText().length() == 0) {
             throw new InvalidParameterException("First name field cannot be empty");
-        }
-        else if(lNameField.getText().length() == 0) {
+        } else if (lNameField.getText().length() == 0) {
             throw new InvalidParameterException("Last name field cannot be empty");
-        }
-        else if(addressField.getText().length() == 0) {
+        } else if (addressField.getText().length() == 0) {
             throw new InvalidParameterException("Address field cannot be empty");
-        }
-        else if(cityRegionField.getText().length() == 0) {
+        } else if (cityRegionField.getText().length() == 0) {
             throw new InvalidParameterException("City region field cannot be empty");
-        }
-        else if(partyField.getText().length() == 0) {
+        } else if (partyField.getText().length() == 0) {
             throw new InvalidParameterException("Party field cannot be empty");
-        }
-        else if(constituencyField.getText().length() == 0) {
+        } else if (constituencyField.getText().length() == 0) {
             throw new InvalidParameterException("Constituency field cannot be empty");
         }
     }
@@ -172,6 +168,7 @@ public class EditCandidateView extends JPanel {
 
     /**
      * Shows the dialog that confirms if user wants to delete the record or not
+     *
      * @param candidate object that may be deleted
      * @return true if user slicks "Yes", false if "No"
      */
@@ -181,17 +178,18 @@ public class EditCandidateView extends JPanel {
                 "Confirm Delete",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
-        if(result == JOptionPane.YES_OPTION){
+        if (result == JOptionPane.YES_OPTION) {
             return true;
-        }else if (result == JOptionPane.NO_OPTION){
+        } else if (result == JOptionPane.NO_OPTION) {
             return false;
-        }else {
+        } else {
             return false;
         }
     }
 
     /**
      * Shows the dialog that confirms if user wants to do something
+     *
      * @return true if user slicks "Yes", false if "No"
      */
     public boolean showConfirmDialog(String msg) {
@@ -199,11 +197,11 @@ public class EditCandidateView extends JPanel {
                 msg, "Confirm",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
-        if(result == JOptionPane.YES_OPTION){
+        if (result == JOptionPane.YES_OPTION) {
             return true;
-        }else if (result == JOptionPane.NO_OPTION){
+        } else if (result == JOptionPane.NO_OPTION) {
             return false;
-        }else {
+        } else {
             return false;
         }
     }
@@ -217,6 +215,7 @@ public class EditCandidateView extends JPanel {
 
     /**
      * Method is displaying the error message on the screen
+     *
      * @param errMsg the message that will be shown
      */
     public void showMessage(String errMsg) {

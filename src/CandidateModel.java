@@ -104,10 +104,11 @@ public class CandidateModel implements Comparable<CandidateModel> {
 
     /**
      * CSV representation of the CandidateModel object
+     *
      * @return String
      */
     public String getCsvLine() {
-        return id+","+lastName+","+firstName+",\""+address+", "+cityRegion+"\","+party+","+elecArea+",";
+        return id + "," + lastName + "," + firstName + ",\"" + address + ", " + cityRegion + "\"," + party + "," + elecArea + ",";
     }
 
     @Override

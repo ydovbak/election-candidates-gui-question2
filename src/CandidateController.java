@@ -17,7 +17,6 @@ public class CandidateController extends JFrame implements WindowListener {
     private SortCandidateView sortCandidateView;
     private WindowView windowView;
     private ArrayList<CandidateModel> candidates;
-    private int numCandidates;
     private File selectedFile;
 
     // save the head of csv, will be used when writing to file
@@ -42,8 +41,8 @@ public class CandidateController extends JFrame implements WindowListener {
         // that will be analysed and shown in program
         try {
             // initially set to null
-
             selectedFile = null;
+
             // create file chooser for browsing local files
             JFileChooser fileChooser = new JFileChooser();
 
@@ -51,8 +50,7 @@ public class CandidateController extends JFrame implements WindowListener {
             fileChooser.setCurrentDirectory(new File(".\\"));
 
             // if user chooses the file and clicks "ok", we get the selected file
-            if (fileChooser.showOpenDialog(getContentPane()) == JFileChooser.APPROVE_OPTION)
-            {
+            if (fileChooser.showOpenDialog(getContentPane()) == JFileChooser.APPROVE_OPTION) {
                 selectedFile = fileChooser.getSelectedFile();
             }
 
@@ -111,10 +109,6 @@ public class CandidateController extends JFrame implements WindowListener {
         sortCandidateView.setDisplayedCandidates((ArrayList<CandidateModel>) candidates.clone());
         windowView.hideEdit();
         windowView.hideSort();
-
-        // save number of candidates
-        // this variable will be used to create id for new candidates
-        numCandidates = candidates.size();
 
 
         /*Implementing ActionListener and checking get source on every click led to
@@ -336,6 +330,7 @@ public class CandidateController extends JFrame implements WindowListener {
 
     /**
      * Method is saving all the changes to the record that was displayed on the screen.
+     *
      * @param id id of the record that has to be updated
      */
     public void saveCandidateEdit(int id) {
@@ -369,9 +364,9 @@ public class CandidateController extends JFrame implements WindowListener {
             editCandidateView.validateInputs();
             CandidateModel newCandidate = new CandidateModel();
 
-            // increment the local number if candidates, use it as id of new candidate
-            numCandidates++;
-            newCandidate.setId(numCandidates);
+            // id of the new candidate is by 1 bigger that the id of last candidate in the list
+            int id =  candidates.get(candidates.size()-1).getId() + 1;
+            newCandidate.setId(id);
             newCandidate.setFirstName(editCandidateView.getfNameField().getText());
             newCandidate.setLastName(editCandidateView.getlNameField().getText());
             newCandidate.setAddress(editCandidateView.getAddressField().getText());
@@ -382,7 +377,7 @@ public class CandidateController extends JFrame implements WindowListener {
             // save new candidate in local ArrayList
             candidates.add(newCandidate);
             editCandidateView.showDialog(newCandidate.getFirstName() + " "
-                    + newCandidate.getLastName() + " candidate with ID " + numCandidates + " was added successfully");
+                    + newCandidate.getLastName() + " candidate with ID " + id + " was added successfully");
             editCandidateView.resetInputs();
 
             // reset warning msg
@@ -416,8 +411,7 @@ public class CandidateController extends JFrame implements WindowListener {
         // sorting records asc or desc according to the radio button that were selected
         if (sortCandidateView.getAscRButton().isSelected()) {
             Collections.sort(sortedCandidates);
-        }
-        else {
+        } else {
             Collections.sort(sortedCandidates, Collections.reverseOrder());
         }
 
@@ -443,6 +437,7 @@ public class CandidateController extends JFrame implements WindowListener {
 
     /**
      * Finding and returning the CandidateModel object from the local ArrayList of candidates
+     *
      * @param id id of the candidate that we are looking for
      * @return CandidateModel object if it was found, and null if it was not in the list
      */
@@ -458,9 +453,10 @@ public class CandidateController extends JFrame implements WindowListener {
 
     /**
      * Method is parsing the data from csv line into an object of CandidateModel
+     *
      * @param csvLine a line from CSV file that was provided
-     * @return  an object of CandidateModel if CSV line was correct,
-     *          null if CSV line was faulty (contained invalid arguments)
+     * @return an object of CandidateModel if CSV line was correct,
+     * null if CSV line was faulty (contained invalid arguments)
      */
     public CandidateModel getModelFromCsv(String csvLine) {
         Scanner sectionScanner = new Scanner(csvLine);
@@ -513,8 +509,7 @@ public class CandidateController extends JFrame implements WindowListener {
             String cityRegion = addressParts[addressParts.length - 1];
 
             // removing extra space if its there
-            if (cityRegion.charAt(0) == ' ' )
-            {
+            if (cityRegion.charAt(0) == ' ') {
                 cityRegion = cityRegion.substring(1);
             }
 
@@ -524,8 +519,7 @@ public class CandidateController extends JFrame implements WindowListener {
             String elecArea = partyParts[2];
 
             return new CandidateModel(id, firstName, lastName, candAddress, cityRegion, party, elecArea);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -542,8 +536,7 @@ public class CandidateController extends JFrame implements WindowListener {
 
         if (saveConfirmed) {
             // save change to the file
-            try
-            {
+            try {
                 // fetching content, that will be written to the file
                 String content = fileTitle + "\n" + fileHeadings;
                 for (CandidateModel candidateModel : candidates) {
@@ -555,9 +548,7 @@ public class CandidateController extends JFrame implements WindowListener {
                 pw.print(content);
                 pw.close(); //Saving
 
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }

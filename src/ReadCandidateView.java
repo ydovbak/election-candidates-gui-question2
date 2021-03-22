@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ReadCandidateView extends JPanel{
+public class ReadCandidateView extends JPanel {
 
 
     private JComboBox<String> electoralAreaComboBox;
@@ -15,14 +15,14 @@ public class ReadCandidateView extends JPanel{
 
         // search criteria combo box
         electoralAreaComboBox = new JComboBox<String>();
-        constituencyLabel = new JLabel( "Constituency");
+        constituencyLabel = new JLabel("Constituency");
         search = new JButton("Search");
 
         // all data displayed here
         dataDisplayArea = new JTextArea(30, 90);
 
         // make display area scrollable
-        scroll = new JScrollPane (dataDisplayArea,
+        scroll = new JScrollPane(dataDisplayArea,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
